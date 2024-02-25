@@ -4,26 +4,28 @@
         <br>
 
         <div class="mb-3">
-            <label for="">Title</label>
-            <input class="form-control" type="text" placeholder="Input Title" aria-label="default input example">
+            <label for="title">Title</label>
+            <input v-model="animeData.title" class="form-control" type="text" id="title" placeholder="Input Title"
+                aria-label="default input example">
         </div>
         <div class="mb-3">
-            <label for="">Content</label>
-            <input class="form-control" type="text" placeholder="Input Content" aria-label="default input example">
+            <label for="content">Content</label>
+            <input v-model="animeData.content" class="form-control" type="text" id="content" placeholder="Input Content"
+                aria-label="default input example">
         </div>
         <div class="mb-3">
             <label for="">Kategori</label>
-            <div v-for="(category, index) in this.categories" :key="index">
+            <div v-for="(category, index) in categories" :key="index">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" :value="category.id" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
+                    <input v-model="animeData.kategori_id" class="form-check-input" type="checkbox" :value="category.id">
+                    <label class="form-check-label" :for="'category-' + category.id">
                         {{ category.kategori }}
                     </label>
                 </div>
             </div>
         </div>
         <div class="mb-3">
-            <button type="button" class="btn btn-primary">
+            <button @click="saveAnime" class="btn btn-primary">
                 Save
             </button>
         </div>
@@ -32,12 +34,16 @@
 
 <script>
 import axios from 'axios';
-import { RouterLink } from 'vue-router';
 
 export default {
-    name: 'categories',
+    name: 'AnimeCreate',
     data() {
         return {
+            animeData: {
+                title: '',
+                content: '',
+                kategori_id: [] // Menyimpan ID kategori yang dipilih
+            },
             categories: []
         };
     },
@@ -48,10 +54,14 @@ export default {
         getCategory() {
             axios.get('http://localhost:1993/kategori/').then(res => {
                 this.categories = res.data.data;
-                // console.log(res.data.data);
             });
+        },
+        saveAnime() {
+            axios.post('http://localhost:1993/anime/create', this.animeData).then(res => {
+                console.log('Anime berhasil disimpan:', res.data);
+            });
+            this.$router.push('/anime');
         }
-    },
-    components: { RouterLink }
-}
+    }
+};
 </script>

@@ -51,6 +51,13 @@ export default {
     mounted() {
         this.getAnime();
     },
+    beforeRouteEnter(to, from, next) {
+        axios.get('http://localhost:1993/anime/').then(res => {
+            next(vm => {
+                vm.animes = res.data.data;
+            });
+        });
+    },
     methods: {
         getAnime() {
             axios.get('http://localhost:1993/anime/').then(res => {

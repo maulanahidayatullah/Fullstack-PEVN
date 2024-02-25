@@ -16,6 +16,7 @@ module.exports = {
                 })
                 .then((animes) => {
                     const data = animes.map((anime) => ({
+                        id: anime.id,
                         title: anime.title,
                         content: anime.content,
                         kategori: anime.kategori.map((kategori) => ({
@@ -37,7 +38,11 @@ module.exports = {
                     })
                 });
         } catch (error) {
-
+            console.log(error);
+            res.json({
+                status: 500,
+                message: "Internal Server Error",
+            })
         }
     },
     create: async (req, res) => {
