@@ -22,8 +22,12 @@
                             </span>
                         </td>
                         <td>
-                            <RouterLink to="/" class="btn btn-success mx-1">Edit</RouterLink>
-                            <RouterLink to="/" class="btn btn-danger mx-1">Delete</RouterLink>
+                            <RouterLink :to="{ path: '/anime/edit/' + anime.id }" class="btn btn-success mx-1">
+                                Edit
+                            </RouterLink>
+                            <button @click="deleteAnime(anime.id)" class="btn btn-danger">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -63,6 +67,14 @@ export default {
             axios.get('http://localhost:1993/anime/').then(res => {
                 this.animes = res.data.data;
             });
+        },
+        deleteAnime(id) {
+            if (confirm("Pengen Ngapus Lurr ?")) {
+                axios.delete(`http://localhost:1993/anime/delete/${id}`).then(res => {
+                    this.getAnime();
+                });
+            }
+
         }
     },
     components: { RouterLink }

@@ -1,5 +1,6 @@
 import AnimeView from '../views/Anime/view.vue';
 import AnimeCreate from '../views/Anime/create.vue';
+import AnimeEdit from '../views/Anime/edit.vue';
 
 const animeRoutes = [
     {
@@ -9,6 +10,10 @@ const animeRoutes = [
     {
         path: '/anime/create',
         component: AnimeCreate
+    },
+    {
+        path: '/anime/edit/:id',
+        component: AnimeEdit
     }
 ]
 

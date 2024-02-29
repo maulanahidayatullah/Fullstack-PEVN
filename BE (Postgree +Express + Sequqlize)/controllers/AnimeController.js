@@ -48,15 +48,15 @@ module.exports = {
     create: async (req, res) => {
         try {
             const schema = {
-                title: "string",
-                content: "string",
-                kategori_id: { type: 'array', items: 'number', min: 1 },
+                title: { type: ['string'], optional: false },
+                content: { type: ['string'], optional: false },
+                kategori_id: { type: 'array', items: 'number', min: 1, optional: false },
             }
 
 
             const validation = v.compile(schema)(req.body);
             if (validation !== true) {
-                return res.json({
+                return res.status(400).json({
                     status: 400,
                     message: validation,
                 })

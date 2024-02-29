@@ -1,23 +1,23 @@
 <template>
     <div class="container mt-1">
-        <h1>Anime Create</h1>
+        <h1>Anime Edit</h1>
         <br>
 
         <div class="mb-3">
             <label for="title">Title</label>
-            <input v-model="animeData.title" class="form-control" type="text" id="title" placeholder="Input Title"
+            <input v-model="anime.title" class="form-control" type="text" id="title" placeholder="Input Title"
                 aria-label="default input example">
         </div>
         <div class="mb-3">
             <label for="content">Content</label>
-            <input v-model="animeData.content" class="form-control" type="text" id="content" placeholder="Input Content"
+            <input v-model="anime.content" class="form-control" type="text" id="content" placeholder="Input Content"
                 aria-label="default input example">
         </div>
         <div class="mb-3">
             <label for="">Kategori</label>
             <div v-for="(category, index) in categories" :key="index">
                 <div class="form-check">
-                    <input v-model="animeData.kategori_id" class="form-check-input" type="checkbox" :value="category.id">
+                    <input v-model="anime.kategori_id" class="form-check-input" type="checkbox" :value="category.id">
                     <label class="form-check-label" :for="'category-' + category.id">
                         {{ category.kategori }}
                     </label>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="mb-3">
-            <button @click="saveAnime" class="btn btn-primary">
+            <button @click="updateAnime" class="btn btn-primary">
                 Save
             </button>
         </div>
@@ -36,10 +36,11 @@
 import axios from 'axios';
 
 export default {
-    name: 'AnimeCreate',
+    name: 'AnimeEdit',
     data() {
         return {
-            animeData: {
+            animeId: '',
+            anime: {
                 title: '',
                 content: '',
                 kategori_id: []
@@ -48,16 +49,32 @@ export default {
         };
     },
     mounted() {
-        this.getCategory();
+        this.animeId = this.$route.params.id;
+        this.getAnimeById(this.$route.params.id);
     },
     methods: {
+        getAnimeById(id) {
+            axios.get(`http://localhost:1993/anime/${id}`)
+                .then(res => {
+                    this.anime = res.data.data;
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        if (error.response.status == 400) {
+                            alert(error.response.data.message);
+                            // console.log(error.response.data.message);
+                        }
+                    }
+                });
+        },
+
         getCategory() {
             axios.get('http://localhost:1993/kategori/').then(res => {
                 this.categories = res.data.data;
             });
         },
-        saveAnime() {
-            axios.post('http://localhost:1993/anime/create', this.animeData)
+        updateAnime() {
+            axios.put(`http://localhost:1993/anime/update/${this.animeId}`, this.anime)
                 .then(res => {
                     this.$router.push('/anime');
                 })
@@ -65,10 +82,11 @@ export default {
                     if (error.response) {
                         if (error.response.status == 400) {
                             console.log(error.response.data.message);
-                            // this.errorList = ;
+                        }
+                        if (error.response.status == 404) {
+                            console.log(error.response.data.message);
                         }
                     }
-                    // console.log('asd');
                 });
 
         }
